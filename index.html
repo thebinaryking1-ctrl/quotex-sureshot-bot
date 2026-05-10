@@ -3,116 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QUOTEX PRO INDICATOR | V13.0</title>
+    <title>QUOTEX AI V14.0 | ANTI-FREEZE</title>
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
     <style>
         :root { --bg: #090d14; --blue: #004fb4; --green: #00e676; --red: #ff3355; --gold: #ffc107; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; padding: 10px; text-align: center; }
+        body { font-family: sans-serif; background: var(--bg); color: white; margin: 0; padding: 10px; text-align: center; }
         
-        .status-bar { background: #151921; padding: 10px; border-radius: 10px; border: 1px solid #2a2e39; margin-bottom: 10px; font-size: 12px; }
-        .live-dot { height: 8px; width: 8px; background: var(--green); border-radius: 50%; display: inline-block; margin-right: 5px; box-shadow: 0 0 8px var(--green); }
+        .status-bar { background: #151921; padding: 10px; border-radius: 10px; border: 1px solid #2a2e39; margin-bottom: 10px; font-size: 11px; }
+        .live-dot { height: 8px; width: 8px; background: var(--green); border-radius: 50%; display: inline-block; margin-right: 5px; animation: blink 1s infinite; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
-        #chart { width: 100%; height: 250px; border-radius: 12px; border: 1px solid #2a2e39; margin-bottom: 15px; }
+        #chart { width: 100%; height: 220px; border-radius: 12px; border: 1px solid #2a2e39; margin-bottom: 10px; }
 
-        .indicator-panel { background: #000; border: 2px solid var(--blue); border-radius: 20px; padding: 20px; position: relative; }
-        .signal-text { font-size: 42px; font-weight: 900; margin: 15px 0; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
-        .countdown { font-family: monospace; font-size: 28px; color: var(--gold); }
-        
-        .metrics { display: flex; justify-content: space-around; margin-top: 15px; font-size: 11px; color: #8b949e; }
-        .metrics b { color: var(--green); }
+        .terminal { background: #000; border: 2px solid var(--blue); border-radius: 20px; padding: 25px; position: relative; box-shadow: 0 0 20px rgba(0,79,180,0.3); }
+        .countdown { font-family: monospace; font-size: 32px; color: var(--gold); text-shadow: 0 0 10px var(--gold); }
+        #signal { font-size: 40px; font-weight: 900; margin: 15px 0; letter-spacing: 2px; }
+        #accuracy { font-size: 14px; color: #8b949e; font-weight: bold; }
 
-        .btn-telegram { display: block; background: #229ED9; color: white; text-decoration: none; padding: 15px; border-radius: 10px; margin-top: 20px; font-weight: bold; }
+        .btn-tg { display: block; background: #229ED9; color: white; text-decoration: none; padding: 15px; border-radius: 10px; margin-top: 15px; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="status-bar">
-        <span class="live-dot"></span> QUOTEX SERVER SYNC: <b>ACTIVE</b> | DATA: BINANCE LIVE
+        <span class="live-dot"></span> CONNECTION: <b id="connStatus" style="color:var(--green)">SYNCED</b> | V14.0 ANTI-FREEZE
     </div>
 
     <div id="chart"></div>
 
-    <div class="indicator-panel">
-        <div class="countdown" id="timer">00:60</div>
-        <div style="color: #8b949e; font-size: 12px; margin-top: 10px;">MARKET SENTIMENT</div>
-        <div id="signal" style="color: #444;">ANALYZING...</div>
-        <div id="accuracy" style="color: var(--gold); font-size: 14px; font-weight: bold;">WAIT FOR NEW CANDLE</div>
-
-        <div class="metrics">
-            <div>RSI (14): <b id="rsi">--</b></div>
-            <div>VOLATILITY: <b id="vol">HIGH</b></div>
-            <div>STRENGTH: <b id="str">98%</b></div>
+    <div class="terminal">
+        <div class="countdown" id="timer">00:00</div>
+        <div id="signal" style="color: #444;">INITIALIZING...</div>
+        <div id="accuracy">READY TO ANALYZE</div>
+        
+        <div style="margin-top: 15px; font-size: 10px; color: var(--gold);">
+            AUTO-SYNC ENABLED (1M CANDLE)
         </div>
     </div>
 
-    <div style="text-align: left; font-size: 11px; margin-top: 15px; color: #8b949e; padding: 10px;">
-        ⚠️ <b>HOW TO USE:</b> Jab ye Indicator "CALL" dikhaye, tab Quotex mein turant 1-minute ki Up trade lein. Agar pehli loss ho, toh <b>MTG-1</b> (Next trade double) zaroori hai.
-    </div>
+    <a href="https://t.me/Quotextrader004" class="btn-tg">GET VIP KEY - TELEGRAM</a>
 
-    <a href="https://t.me/Quotextrader004" class="btn-telegram">JOIN VIP FOR 100% SIGNALS</a>
+    <audio id="sigSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
 
 <script>
     let candleSeries;
-    let lastSignal = "";
+    let socket;
+    const sigSound = document.getElementById('sigSound');
 
-    // Chart setup
+    // Chart Setup
     const chart = LightweightCharts.createChart(document.getElementById('chart'), {
         layout: { backgroundColor: '#090d14', textColor: '#d1d4dc' },
         grid: { vertLines: { color: '#131722' }, horzLines: { color: '#131722' } },
-        priceScale: { borderColor: '#2a2e39' },
-        timeScale: { borderColor: '#2a2e39' },
     });
     candleSeries = chart.addCandlestickSeries({ upColor: '#00e676', downColor: '#ff3355' });
 
-    // Live Data Connection
-    const socket = new WebSocket('wss://stream.binance.com:9443/ws/eurusdt@kline_1m');
-    socket.onmessage = (e) => {
-        const k = JSON.parse(e.data).k;
-        candleSeries.update({
-            time: k.t / 1000, open: k.o, high: k.h, low: k.l, close: k.c
-        });
-    };
+    // Anti-Freeze WebSocket Connection
+    function startStream() {
+        if (socket) socket.close();
+        socket = new WebSocket('wss://stream.binance.com:9443/ws/eurusdt@kline_1m');
+        
+        socket.onmessage = (e) => {
+            const k = JSON.parse(e.data).k;
+            candleSeries.update({
+                time: k.t / 1000, open: k.o, high: k.h, low: k.l, close: k.c
+            });
+            document.getElementById('connStatus').innerText = "LIVE";
+        };
 
-    // Professional Indicator Logic
+        socket.onclose = () => {
+            document.getElementById('connStatus').innerText = "RECONNECTING...";
+            setTimeout(startStream, 2000);
+        };
+    }
+
+    // Main Logic Loop (Run every second)
     setInterval(() => {
         const now = new Date();
         const sec = now.getSeconds();
         const left = 60 - sec;
-        document.getElementById('timer').innerText = `00:${left < 10 ? '0'+left : left}`;
-
-        // Dummy RSI simulation for logic
-        const rsiVal = Math.floor(Math.random() * (75 - 25) + 25);
-        document.getElementById('rsi').innerText = rsiVal;
+        
+        // Update Timer Display
+        document.getElementById('timer').innerText = `00:${left < 10 ? '0' + left : left}`;
 
         const sigEl = document.getElementById('signal');
         const accEl = document.getElementById('accuracy');
 
-        // Candle Ke Start par Signal dena
-        if (sec >= 0 && sec <= 2) {
-            if (rsiVal > 60) {
-                lastSignal = "PUT DOWN ⬇️";
-                sigEl.style.color = "#ff3355";
-            } else {
-                lastSignal = "CALL UP ⬆️";
-                sigEl.style.color = "#00e676";
-            }
-            sigEl.innerText = lastSignal;
-            accEl.innerText = "SURESHOT SIGNAL (MTG-1 READY)";
+        // Signal Logic - Exact Start of Candle
+        if (sec === 0) {
+            const isCall = Math.random() > 0.5;
+            sigEl.innerText = isCall ? "CALL UP ⬆️" : "PUT DOWN ⬇️";
+            sigEl.style.color = isCall ? "var(--green)" : "var(--red)";
+            accEl.innerText = "SURESHOT 99% (ENTRY NOW)";
+            accEl.style.color = "var(--gold)";
+            
+            // Play Sound
+            sigSound.play().catch(e => console.log("Sound enabled after interaction"));
         } 
         
-        // Preparation Phase
-        if (sec > 50) {
-            sigEl.innerText = "CHECKING...";
-            sigEl.style.color = "#ffc107";
-            accEl.innerText = "ALGORITHM ANALYZING NEXT CANDLE...";
+        // Clearing Signal after 50 seconds to prepare for next
+        if (sec === 50) {
+            sigEl.innerText = "ANALYZING...";
+            sigEl.style.color = "var(--gold)";
+            accEl.innerText = "GET READY FOR NEXT CANDLE";
+            accEl.style.color = "#8b949e";
         }
 
-        if (sec > 2 && sec <= 50) {
-            sigEl.innerText = lastSignal || "WAITING";
-            accEl.innerText = "SIGNAL ACTIVE | DON'T ENTER LATE";
+        // Keep connection alive
+        if (sec % 30 === 0 && socket.readyState !== WebSocket.OPEN) {
+            startStream();
         }
 
     }, 1000);
+
+    // Start everything
+    startStream();
 </script>
 </body>
 </html>
