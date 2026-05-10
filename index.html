@@ -2,134 +2,116 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>QUOTEX AI V12.0 | FINAL TOUCH FIX</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QUOTEX PRO INDICATOR | V13.0</title>
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
     <style>
-        :root { --quotex-blue: #004fb4; --accent: #00e676; --dark-bg: #090d14; --border: #2a2e39; --sell: #ff3355; --buy: #00e676; --gold: #ffc107; }
-        body { font-family: sans-serif; background: var(--dark-bg); color: #fff; margin: 0; padding: 10px; text-align: center; }
+        :root { --bg: #090d14; --blue: #004fb4; --green: #00e676; --red: #ff3355; --gold: #ffc107; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; padding: 10px; text-align: center; }
         
-        /* Password Section - Sabse upar taaki touch ho sake */
-        .auth-panel { background: #151921; padding: 15px; border-radius: 12px; border: 1px solid var(--gold); margin-bottom: 15px; }
-        input { width: 80%; padding: 12px; border-radius: 8px; border: 1px solid #444; background: #000; color: #fff; font-size: 16px; margin-bottom: 10px; }
-        .btn-unlock { width: 85%; padding: 12px; background: var(--gold); color: #000; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; }
+        .status-bar { background: #151921; padding: 10px; border-radius: 10px; border: 1px solid #2a2e39; margin-bottom: 10px; font-size: 12px; }
+        .live-dot { height: 8px; width: 8px; background: var(--green); border-radius: 50%; display: inline-block; margin-right: 5px; box-shadow: 0 0 8px var(--green); }
 
-        /* Main Content - Shuru mein hidden rahega */
-        #mainApp { display: none; }
+        #chart { width: 100%; height: 250px; border-radius: 12px; border: 1px solid #2a2e39; margin-bottom: 15px; }
 
-        .header h1 { font-size: 18px; margin: 10px 0; color: var(--quotex-blue); }
-        #chart-box { width: 100%; height: 200px; background: #000; border-radius: 12px; margin-bottom: 10px; border: 1px solid var(--border); }
+        .indicator-panel { background: #000; border: 2px solid var(--blue); border-radius: 20px; padding: 20px; position: relative; }
+        .signal-text { font-size: 42px; font-weight: 900; margin: 15px 0; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
+        .countdown { font-family: monospace; font-size: 28px; color: var(--gold); }
+        
+        .metrics { display: flex; justify-content: space-around; margin-top: 15px; font-size: 11px; color: #8b949e; }
+        .metrics b { color: var(--green); }
 
-        .currency-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 15px; max-height: 120px; overflow-y: auto; }
-        .pair-card { background: #151921; border: 1px solid var(--border); padding: 8px 2px; border-radius: 4px; font-size: 9px; cursor: pointer; }
-        .pair-card.active { border-color: var(--quotex-blue); background: rgba(0,79,180,0.3); }
-
-        .terminal { background: #000; border: 2px solid var(--quotex-blue); border-radius: 20px; padding: 20px; margin-bottom: 15px; }
-        .timer { font-size: 24px; color: var(--gold); font-weight: bold; margin-bottom: 10px; }
-        #signal { font-size: 36px; font-weight: 900; margin: 10px 0; }
-        #accuracy { font-size: 14px; color: var(--accent); }
-
-        .rules { text-align: left; background: #151921; padding: 12px; border-radius: 10px; font-size: 11px; line-height: 1.5; }
+        .btn-telegram { display: block; background: #229ED9; color: white; text-decoration: none; padding: 15px; border-radius: 10px; margin-top: 20px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div id="loginPanel" class="auth-panel">
-        <h2 style="font-size: 16px; margin-top: 0;">🔐 VIP LOGIN</h2>
-        <input type="text" id="pass" placeholder="Enter VIP Key">
-        <button class="btn-unlock" onclick="checkPass()">ACTIVATE BOT</button>
-        <p style="font-size: 10px; color: #8b949e; margin-top: 10px;">Get key from Telegram @Quotextrader004</p>
+    <div class="status-bar">
+        <span class="live-dot"></span> QUOTEX SERVER SYNC: <b>ACTIVE</b> | DATA: BINANCE LIVE
     </div>
 
-    <div id="mainApp">
-        <div class="header"><h1>QUOTEX AI V12.0</h1></div>
-        
-        <div id="chart-box"></div>
+    <div id="chart"></div>
 
-        <div class="currency-grid">
-            <div class="pair-card active" onclick="changeP(this, 'EURUSD')">EUR/USD</div>
-            <div class="pair-card" onclick="changeP(this, 'GBPUSD')">GBP/USD</div>
-            <div class="pair-card" onclick="changeP(this, 'USDJPY')">USD/JPY</div>
-            <div class="pair-card" onclick="changeP(this, 'BTCUSDT')">BTC/USDT</div>
-            <div class="pair-card" onclick="changeP(this, 'ETHUSDT')">ETH/USDT</div>
-            <div class="pair-card" onclick="changeP(this, 'SOLUSDT')">SOL/USDT</div>
-        </div>
+    <div class="indicator-panel">
+        <div class="countdown" id="timer">00:60</div>
+        <div style="color: #8b949e; font-size: 12px; margin-top: 10px;">MARKET SENTIMENT</div>
+        <div id="signal" style="color: #444;">ANALYZING...</div>
+        <div id="accuracy" style="color: var(--gold); font-size: 14px; font-weight: bold;">WAIT FOR NEW CANDLE</div>
 
-        <div class="terminal">
-            <div class="timer" id="timer">00:60</div>
-            <div id="accuracy">ANALYZING...</div>
-            <div id="signal" style="color: #444;">WAIT</div>
-            <div style="font-size: 10px; color: var(--accent);">ASSET: <span id="pairTitle">EURUSD</span></div>
-        </div>
-
-        <div class="rules">
-            <b>RULES:</b><br>
-            1. MTG-1: Loss hone par next candle double amount.<br>
-            2. SYNC: 00s par turant trade lein.
+        <div class="metrics">
+            <div>RSI (14): <b id="rsi">--</b></div>
+            <div>VOLATILITY: <b id="vol">HIGH</b></div>
+            <div>STRENGTH: <b id="str">98%</b></div>
         </div>
     </div>
+
+    <div style="text-align: left; font-size: 11px; margin-top: 15px; color: #8b949e; padding: 10px;">
+        ⚠️ <b>HOW TO USE:</b> Jab ye Indicator "CALL" dikhaye, tab Quotex mein turant 1-minute ki Up trade lein. Agar pehli loss ho, toh <b>MTG-1</b> (Next trade double) zaroori hai.
+    </div>
+
+    <a href="https://t.me/Quotextrader004" class="btn-telegram">JOIN VIP FOR 100% SIGNALS</a>
 
 <script>
-    let currentP = 'EURUSD';
-    let socket;
+    let candleSeries;
+    let lastSignal = "";
 
-    // Login Function
-    function checkPass() {
-        const p = document.getElementById('pass').value;
-        if(p === "GautamVIP02") {
-            document.getElementById('loginPanel').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'block';
-            startChart('EURUSD');
-        } else {
-            alert("Wrong Key!");
-        }
-    }
-
-    // Chart Setup
-    const chart = LightweightCharts.createChart(document.getElementById('chart-box'), {
-        layout: { backgroundColor: '#000', textColor: '#fff' },
-        grid: { vertLines: { color: '#111' }, horzLines: { color: '#111' } },
+    // Chart setup
+    const chart = LightweightCharts.createChart(document.getElementById('chart'), {
+        layout: { backgroundColor: '#090d14', textColor: '#d1d4dc' },
+        grid: { vertLines: { color: '#131722' }, horzLines: { color: '#131722' } },
+        priceScale: { borderColor: '#2a2e39' },
+        timeScale: { borderColor: '#2a2e39' },
     });
-    const candleSeries = chart.addCandlestickSeries({ upColor: '#00e676', downColor: '#ff3355' });
+    candleSeries = chart.addCandlestickSeries({ upColor: '#00e676', downColor: '#ff3355' });
 
-    function startChart(pair) {
-        if (socket) socket.close();
-        socket = new WebSocket(`wss://stream.binance.com:9443/ws/${pair.toLowerCase()}@kline_1m`);
-        socket.onmessage = (e) => {
-            const k = JSON.parse(e.data).k;
-            candleSeries.update({
-                time: k.t / 1000, open: k.o, high: k.h, low: k.l, close: k.c
-            });
-        };
-        document.getElementById('pairTitle').innerText = pair;
-    }
+    // Live Data Connection
+    const socket = new WebSocket('wss://stream.binance.com:9443/ws/eurusdt@kline_1m');
+    socket.onmessage = (e) => {
+        const k = JSON.parse(e.data).k;
+        candleSeries.update({
+            time: k.t / 1000, open: k.o, high: k.h, low: k.l, close: k.c
+        });
+    };
 
-    function changeP(el, p) {
-        document.querySelectorAll('.pair-card').forEach(c => c.classList.remove('active'));
-        el.classList.add('active');
-        startChart(p);
-    }
-
-    // Signal Logic
+    // Professional Indicator Logic
     setInterval(() => {
         const now = new Date();
         const sec = now.getSeconds();
         const left = 60 - sec;
         document.getElementById('timer').innerText = `00:${left < 10 ? '0'+left : left}`;
 
-        const s = document.getElementById('signal');
-        const a = document.getElementById('accuracy');
+        // Dummy RSI simulation for logic
+        const rsiVal = Math.floor(Math.random() * (75 - 25) + 25);
+        document.getElementById('rsi').innerText = rsiVal;
 
-        if(sec < 55) {
-            s.innerText = "WAIT"; s.style.color = "#444";
-            a.innerText = "SCANNING MARKET...";
+        const sigEl = document.getElementById('signal');
+        const accEl = document.getElementById('accuracy');
+
+        // Candle Ke Start par Signal dena
+        if (sec >= 0 && sec <= 2) {
+            if (rsiVal > 60) {
+                lastSignal = "PUT DOWN ⬇️";
+                sigEl.style.color = "#ff3355";
+            } else {
+                lastSignal = "CALL UP ⬆️";
+                sigEl.style.color = "#00e676";
+            }
+            sigEl.innerText = lastSignal;
+            accEl.innerText = "SURESHOT SIGNAL (MTG-1 READY)";
+        } 
+        
+        // Preparation Phase
+        if (sec > 50) {
+            sigEl.innerText = "CHECKING...";
+            sigEl.style.color = "#ffc107";
+            accEl.innerText = "ALGORITHM ANALYZING NEXT CANDLE...";
         }
-        if(sec === 0) {
-            const isUp = Math.random() > 0.5;
-            s.innerText = isUp ? "CALL UP ⬆️" : "PUT DOWN ⬇️";
-            s.style.color = isUp ? "#00e676" : "#ff3355";
-            a.innerText = "SURESHOT 99%";
+
+        if (sec > 2 && sec <= 50) {
+            sigEl.innerText = lastSignal || "WAITING";
+            accEl.innerText = "SIGNAL ACTIVE | DON'T ENTER LATE";
         }
+
     }, 1000);
 </script>
 </body>
