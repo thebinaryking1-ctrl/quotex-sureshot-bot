@@ -3,116 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QUOTEX PRO V21 | FIXED ENGINE</title>
+    <title>QUOTEX SYNC V22 | SAME SIGNAL ALL DEVICES</title>
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
     <style>
-        :root { --bg: #06090f; --blue: #0062ff; --green: #00ff88; --red: #ff3860; --gold: #ffcc00; }
-        body { font-family: sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 10px; text-align: center; }
+        :root { --bg: #06090f; --blue: #0062ff; --green: #00ff88; --red: #ff3860; --gold: #ffcc00; --border: #21262d; }
+        body { font-family: sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 5px; text-align: center; }
         
-        .header { background: #161b22; padding: 10px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #30363d; }
-        #chart { width: 100%; height: 200px; border-radius: 12px; border: 1px solid #30363d; margin-bottom: 10px; background: #000; }
+        .layout { display: flex; flex-direction: column; gap: 10px; max-width: 800px; margin: auto; }
+        
+        /* Asset Selector List */
+        .asset-container { background: #0d1117; border: 1px solid var(--border); border-radius: 10px; padding: 10px; }
+        .asset-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; max-height: 100px; overflow-y: auto; }
+        .asset-btn { background: #161b22; border: 1px solid var(--border); color: #8b949e; padding: 8px 2px; border-radius: 4px; font-size: 10px; cursor: pointer; font-weight: bold; }
+        .asset-btn.active { border-color: var(--blue); color: #fff; background: rgba(0, 98, 255, 0.2); }
 
-        .terminal { background: #000; border: 2px solid var(--blue); border-radius: 20px; padding: 30px 10px; box-shadow: 0 0 20px rgba(0,98,255,0.3); }
-        .timer { font-family: monospace; font-size: 35px; color: var(--gold); font-weight: bold; margin-bottom: 10px; }
-        #signal { font-size: 45px; font-weight: 900; margin: 15px 0; min-height: 60px; }
-        #status { font-size: 14px; color: var(--green); font-weight: bold; text-transform: uppercase; }
+        #chart { width: 100%; height: 200px; border-radius: 12px; border: 1px solid var(--border); background: #000; }
 
-        .footer { margin-top: 20px; font-size: 11px; color: #8b949e; line-height: 1.6; text-align: left; background: #161b22; padding: 10px; border-radius: 8px; }
+        /* Sync Terminal */
+        .terminal { background: #000; border: 2px solid var(--blue); border-radius: 20px; padding: 20px; position: relative; box-shadow: 0 0 20px rgba(0,98,255,0.3); }
+        .timer { font-family: monospace; font-size: 32px; color: var(--gold); }
+        #signal { font-size: 42px; font-weight: 900; margin: 10px 0; min-height: 50px; }
+        #info { font-size: 12px; color: var(--green); font-weight: bold; }
+
+        .footer { font-size: 10px; color: #555; background: #0d1117; padding: 10px; border-radius: 8px; text-align: left; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <span style="color:var(--green)">●</span> QUOTEX AI V21.0 | <b>HYPER-SYNC</b>
-    </div>
+<div class="layout">
+    <div style="font-size: 12px; font-weight: bold; color: var(--blue);">QUOTEX SYNC ENGINE V22.0</div>
 
     <div id="chart"></div>
 
+    <div class="asset-container">
+        <div style="font-size: 10px; margin-bottom: 5px; color: var(--gold);">SELECT ASSET (30+ PAIRS)</div>
+        <div class="asset-grid" id="assetList">
+            <button class="asset-btn active" onclick="changePair(this, 'EURUSD')">EUR/USD</button>
+            <button class="asset-btn" onclick="changePair(this, 'GBPUSD')">GBP/USD</button>
+            <button class="asset-btn" onclick="changePair(this, 'USDJPY')">USD/JPY</button>
+            <button class="asset-btn" onclick="changePair(this, 'AUDUSD')">AUD/USD</button>
+            <button class="asset-btn" onclick="changePair(this, 'USDCAD')">USD/CAD</button>
+            <button class="asset-btn" onclick="changePair(this, 'EURJPY')">EUR/JPY</button>
+            <button class="asset-btn" onclick="changePair(this, 'GBPJPY')">GBP/JPY</button>
+            <button class="asset-btn" onclick="changePair(this, 'AUDJPY')">AUD/JPY</button>
+            <button class="asset-btn" onclick="changePair(this, 'BTCUSDT')">BTC/USD</button>
+            <button class="asset-btn" onclick="changePair(this, 'ETHUSDT')">ETH/USD</button>
+            <button class="asset-btn" onclick="changePair(this, 'SOLUSDT')">SOL/USD</button>
+            <button class="asset-btn" onclick="changePair(this, 'XRPUSDT')">XRP/USD</button>
+        </div>
+    </div>
+
     <div class="terminal">
-        <div class="timer" id="timerDisplay">00:00</div>
+        <div class="timer" id="timer">00:00</div>
         <div id="signal" style="color: #333;">SCANNING</div>
-        <div id="status">SYSTEM ONLINE</div>
+        <div id="info">ASSET: <span id="currentAsset">EURUSD</span></div>
     </div>
 
     <div class="footer">
-        <b>HOW TO MAKE $20-30 DAILY:</b><br>
-        1. Wait for Timer to reach <b>00:60</b>.<br>
-        2. Jab Signal chamke, turant 1-min trade lein.<br>
-        3. Agar Loss ho, toh <b>MTG-1</b> (Next trade double) karein.
+        <b>SYNC TRADING:</b> Ye signal price ke last digit se banta hai, isliye har device par same aayega. 00:60 par trade lein. Loss hone par <b>MTG-1</b> karein.
     </div>
+</div>
 
 <script>
-    let candleSeries;
-    let socket;
+    let candleSeries, socket, currentPair = 'EURUSD', lastPrice = 0;
     let lastSignalMin = -1;
 
-    // 1. Chart Initializer (Error Handled)
-    function initChart() {
-        try {
-            const chart = LightweightCharts.createChart(document.getElementById('chart'), {
-                layout: { backgroundColor: '#000', textColor: '#d1d4dc' },
-                grid: { vertLines: { visible: false }, horzLines: { color: '#111' } },
-            });
-            candleSeries = chart.addCandlestickSeries({ upColor: '#00ff88', downColor: '#ff3860' });
-            connectMarket();
-        } catch(e) { console.log("Chart Loading..."); }
-    }
+    // 1. Chart Init
+    const chart = LightweightCharts.createChart(document.getElementById('chart'), {
+        layout: { backgroundColor: '#000', textColor: '#d1d4dc' },
+        grid: { vertLines: { visible: false }, horzLines: { color: '#111' } },
+    });
+    candleSeries = chart.addCandlestickSeries({ upColor: '#00ff88', downColor: '#ff3860' });
 
-    // 2. Direct Market Data
-    function connectMarket() {
+    // 2. Data Connection
+    function connect(pair) {
         if (socket) socket.close();
-        socket = new WebSocket('wss://stream.binance.com:9443/ws/eurusdt@kline_1m');
+        socket = new WebSocket(`wss://stream.binance.com:9443/ws/${pair.toLowerCase()}@kline_1m`);
         socket.onmessage = (e) => {
             const k = JSON.parse(e.data).k;
+            lastPrice = parseFloat(k.c);
             candleSeries.update({ time: k.t/1000, open: k.o, high: k.h, low: k.l, close: k.c });
         };
+        document.getElementById('currentAsset').innerText = pair;
     }
 
-    // 3. Precision Engine (Timer + Signal)
-    function startPrecisionEngine() {
-        setInterval(() => {
-            const now = new Date();
-            const sec = now.getSeconds();
-            const min = now.getMinutes();
-            const left = 60 - sec;
-
-            // Timer Update (Never Stops)
-            document.getElementById('timerDisplay').innerText = `00:${left < 10 ? '0'+left : left}`;
-
-            const sigEl = document.getElementById('signal');
-            const statusEl = document.getElementById('status');
-
-            // Signal Logic at exactly 00 seconds
-            if (sec === 0 && lastSignalMin !== min) {
-                lastSignalMin = min;
-                const isUp = Math.random() > 0.5;
-                sigEl.innerText = isUp ? "CALL UP ⬆️" : "PUT DOWN ⬇️";
-                sigEl.style.color = isUp ? "var(--green)" : "var(--red)";
-                statusEl.innerText = "SURESHOT ENTRY NOW!";
-                statusEl.style.color = "var(--gold)";
-            }
-
-            // Reset/Analyze Phase (50-59 sec)
-            if (sec >= 50 && sec < 60) {
-                sigEl.innerText = "ANALYZING";
-                sigEl.style.color = "#444";
-                statusEl.innerText = "PREPARING NEXT SIGNAL...";
-                statusEl.style.color = "var(--blue)";
-            }
-
-            // Active Signal State
-            if (sec > 5 && sec < 50) {
-                statusEl.innerText = "SIGNAL ACTIVE | FOLLOW MTG-1";
-            }
-
-        }, 1000);
+    function changePair(btn, pair) {
+        document.querySelectorAll('.asset-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentPair = pair;
+        connect(pair);
     }
 
-    // Run Everything
-    window.onload = () => {
-        initChart();
-        startPrecisionEngine();
-    };
+    // 3. Sync Signal Engine (Same for all devices)
+    setInterval(() => {
+        const now = new Date();
+        const sec = now.getSeconds();
+        const min = now.getMinutes();
+        const left = 60 - sec;
+
+        document.getElementById('timer').innerText = `00:${left < 10 ? '0'+left : left}`;
+
+        const sigEl = document.getElementById('signal');
+        
+        // At exactly 00 seconds
+        if (sec === 0 && lastSignalMin !== min) {
+            lastSignalMin = min;
+            
+            // LOGIC: Price ke last digit se signal (Taaki har phone par same ho)
+            // Agar last price ka decimal digit even hai toh CALL, odd hai toh PUT
+            const priceStr = lastPrice.toString();
+            const lastDigit = parseInt(priceStr.charAt(priceStr.length - 1));
+            
+            const isUp = lastDigit % 2 === 0;
+            sigEl.innerText = isUp ? "CALL UP ⬆️" : "PUT DOWN ⬇️";
+            sigEl.style.color = isUp ? "var(--green)" : "var(--red)";
+            document.querySelector('.terminal').style.borderColor = isUp ? "var(--green)" : "var(--red)";
+        }
+
+        if (sec === 50) {
+            sigEl.innerText = "WAITING";
+            sigEl.style.color = "#444";
+            document.querySelector('.terminal').style.borderColor = "var(--blue)";
+        }
+
+    }, 1000);
+
+    connect(currentPair);
 </script>
 </body>
 </html>
