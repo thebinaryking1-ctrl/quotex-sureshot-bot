@@ -1,190 +1,97 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QUOTEX AI V9.0 | 30+ ASSETS SYNC</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>QUOTEX AI V11.0 | TOUCH FIXED</title>
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
     <style>
         :root { --quotex-blue: #004fb4; --accent: #00e676; --dark-bg: #090d14; --card-bg: #151921; --border: #2a2e39; --sell: #ff3355; --buy: #00e676; --gold: #ffc107; }
-        body { font-family: 'Inter', sans-serif; background: var(--dark-bg); color: #e0e0e0; margin: 0; padding: 0; text-align: center; overflow-x: hidden; }
+        body { font-family: 'Inter', sans-serif; background: var(--dark-bg); color: #e0e0e0; margin: 0; padding: 0; text-align: center; -webkit-tap-highlight-color: transparent; }
         .container { max-width: 600px; margin: auto; padding: 10px; }
         
         .header { padding: 10px 0; border-bottom: 1px solid var(--border); }
-        .header h1 { font-size: 16px; color: #fff; margin: 0; text-transform: uppercase; letter-spacing: 1px; }
+        .header h1 { font-size: 16px; color: #fff; margin: 0; text-transform: uppercase; }
 
-        #chart-box { width: 100%; height: 200px; background: #000; border: 1px solid var(--border); border-radius: 12px; margin: 10px 0; }
+        #chart-box { width: 100%; height: 200px; background: #000; border: 1px solid var(--border); border-radius: 12px; margin: 10px 0; position: relative; z-index: 1; }
 
-        /* Scrollable Currency Grid for 30+ Pairs */
-        .currency-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 8px; margin-bottom: 10px; }
-        .currency-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; max-height: 150px; overflow-y: auto; padding-right: 5px; }
-        .pair-card { background: #090d14; border: 1px solid var(--border); padding: 7px 2px; border-radius: 4px; cursor: pointer; font-size: 8px; font-weight: bold; color: #8b949e; }
-        .pair-card.active { border-color: var(--quotex-blue); background: rgba(0, 79, 180, 0.3); color: #fff; }
+        .currency-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 8px; margin-bottom: 10px; position: relative; z-index: 2; }
+        .currency-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; max-height: 120px; overflow-y: auto; padding: 5px; }
+        
+        .pair-card { 
+            background: #090d14; 
+            border: 1px solid var(--border); 
+            padding: 8px 2px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 9px; 
+            font-weight: bold; 
+            color: #8b949e; 
+            transition: 0.2s;
+            pointer-events: auto; /* Touch fix */
+        }
+        .pair-card.active { border-color: var(--quotex-blue); background: rgba(0, 79, 180, 0.4); color: #fff; }
 
-        /* Custom Scrollbar */
-        .currency-grid::-webkit-scrollbar { width: 4px; }
-        .currency-grid::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+        /* Terminal Fixed */
+        .terminal { background: #000; border: 2px solid var(--quotex-blue); border-radius: 20px; min-height: 250px; position: relative; margin-bottom: 15px; display: flex; flex-direction: column; justify-content: center; z-index: 10; }
+        
+        .lock-screen { 
+            position: absolute; 
+            top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(9, 13, 20, 1); 
+            z-index: 999; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            border-radius: 18px; 
+            pointer-events: auto; /* Input fix */
+        }
 
-        .terminal { background: #000; border: 2px solid var(--quotex-blue); border-radius: 20px; min-height: 240px; position: relative; display: flex; flex-direction: column; justify-content: center; overflow: hidden; margin-bottom: 10px; }
-        .timer-row { font-family: monospace; color: var(--gold); font-size: 24px; font-weight: bold; margin-bottom: 5px; }
-        #signalDir { font-size: 36px; font-weight: 900; margin: 8px 0; }
+        input { 
+            background: #1c212d; 
+            border: 1px solid var(--border); 
+            color: #fff; 
+            padding: 15px; 
+            width: 75%; 
+            border-radius: 8px; 
+            text-align: center; 
+            margin-bottom: 12px; 
+            font-size: 16px; 
+            outline: none;
+            pointer-events: auto;
+        }
+
+        #sigBox { width: 100%; transition: 0.3s; }
+        .timer-row { font-family: monospace; color: var(--gold); font-size: 24px; font-weight: bold; }
+        #signalDir { font-size: 38px; font-weight: 900; margin: 10px 0; }
         #accuracy { font-size: 13px; color: var(--gold); font-weight: bold; }
 
-        .rules-section { background: #1c212d; border: 1px solid var(--border); border-radius: 12px; padding: 12px; text-align: left; margin-bottom: 15px; }
-        .rules-title { color: var(--gold); font-weight: 800; font-size: 13px; margin-bottom: 8px; border-bottom: 1px solid #333; padding-bottom: 4px; }
-        .rule-item { font-size: 11px; margin-bottom: 5px; color: #c9d1d9; line-height: 1.3; }
-        .rule-item b { color: var(--accent); }
-
-        .btn { display: block; width: 100%; margin: 8px 0; padding: 14px; border-radius: 10px; text-decoration: none; font-weight: 800; font-size: 13px; cursor: pointer; border: none; text-align: center; color: white; }
+        .btn { display: block; width: 100%; margin: 8px 0; padding: 14px; border-radius: 10px; text-decoration: none; font-weight: 800; font-size: 13px; cursor: pointer; border: none; text-align: center; color: white; pointer-events: auto; }
         .btn-blue { background: var(--quotex-blue); }
 
-        .lock-screen { position: absolute; inset: 0; background: rgba(9, 13, 20, 0.99); z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        input { background: #1c212d; border: 1px solid var(--border); color: #fff; padding: 12px; width: 70%; border-radius: 8px; text-align: center; margin-bottom: 10px; font-size: 16px; }
+        .rules-section { background: #1c212d; border: 1px solid var(--border); border-radius: 12px; padding: 12px; text-align: left; }
+        .rule-item { font-size: 11px; margin-bottom: 5px; color: #c9d1d9; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header"><h1>QUOTEX <span>ULTRA AI V9.0</span></h1></div>
+    <div class="header"><h1>QUOTEX <span>PRO V11.0</span></h1></div>
 
     <div id="chart-box"></div>
 
     <div class="currency-box">
         <div class="currency-grid" id="pairGrid">
-            <div class="pair-card active" onclick="changePair('EURUSD')">EUR/USD</div>
-            <div class="pair-card" onclick="changePair('GBPUSD')">GBP/USD</div>
-            <div class="pair-card" onclick="changePair('USDJPY')">USD/JPY</div>
-            <div class="pair-card" onclick="changePair('AUDUSD')">AUD/USD</div>
-            <div class="pair-card" onclick="changePair('USDCAD')">USD/CAD</div>
-            <div class="pair-card" onclick="changePair('USDCHF')">USD/CHF</div>
-            <div class="pair-card" onclick="changePair('NZDUSD')">NZD/USD</div>
-            <div class="pair-card" onclick="changePair('EURGBP')">EUR/GBP</div>
-            <div class="pair-card" onclick="changePair('EURJPY')">EUR/JPY</div>
-            <div class="pair-card" onclick="changePair('GBPJPY')">GBP/JPY</div>
-            <div class="pair-card" onclick="changePair('AUDJPY')">AUD/JPY</div>
-            <div class="pair-card" onclick="changePair('EURAUD')">EUR/AUD</div>
-            <div class="pair-card" onclick="changePair('GBPAUD')">GBP/AUD</div>
-            <div class="pair-card" onclick="changePair('AUDCAD')">AUD/CAD</div>
-            <div class="pair-card" onclick="changePair('CADJPY')">CAD/JPY</div>
-            <div class="pair-card" onclick="changePair('EURCAD')">EUR/CAD</div>
-            <div class="pair-card" onclick="changePair('GBPCAD')">GBP/CAD</div>
-            <div class="pair-card" onclick="changePair('NZDJPY')">NZD/JPY</div>
-            <div class="pair-card" onclick="changePair('CHFJPY')">CHF/JPY</div>
-            <div class="pair-card" onclick="changePair('EURNZD')">EUR/NZD</div>
-            <div class="pair-card" onclick="changePair('GBPNZD')">GBP/NZD</div>
-            <div class="pair-card" onclick="changePair('AUDNZD')">AUD/NZD</div>
-            <div class="pair-card" onclick="changePair('BTCUSDT')">BTC/USDT</div>
-            <div class="pair-card" onclick="changePair('ETHUSDT')">ETH/USDT</div>
-            <div class="pair-card" onclick="changePair('SOLUSDT')">SOL/USDT</div>
-            <div class="pair-card" onclick="changePair('BNBUSDT')">BNB/USDT</div>
-            <div class="pair-card" onclick="changePair('XRPUSDT')">XRP/USDT</div>
-            <div class="pair-card" onclick="changePair('ADAUSDT')">ADA/USDT</div>
-            <div class="pair-card" onclick="changePair('DOTUSDT')">DOT/USDT</div>
-            <div class="pair-card" onclick="changePair('LINKUSDT')">LINK/USDT</div>
+            <div class="pair-card active" onclick="changePair(this, 'EURUSD')">EUR/USD</div>
+            <div class="pair-card" onclick="changePair(this, 'GBPUSD')">GBP/USD</div>
+            <div class="pair-card" onclick="changePair(this, 'USDJPY')">USD/JPY</div>
+            <div class="pair-card" onclick="changePair(this, 'AUDUSD')">AUD/USD</div>
+            <div class="pair-card" onclick="changePair(this, 'BTCUSDT')">BTC/USDT</div>
+            <div class="pair-card" onclick="changePair(this, 'ETHUSDT')">ETH/USDT</div>
+            <div class="pair-card" onclick="changePair(this, 'SOLUSDT')">SOL/USDT</div>
+            <div class="pair-card" onclick="changePair(this, 'XRPUSDT')">XRP/USDT</div>
         </div>
     </div>
 
     <div class="terminal">
-        <div id="lockUI" class="lock-screen">
-            <p style="font-size: 12px; font-weight: bold; color: #fff;">🔐 VIP ACCESS LOCKED</p>
-            <input type="password" id="pass" placeholder="Enter VIP License Key">
-            <button class="btn btn-blue" style="width:70%" onclick="unlock()">ACTIVATE V9.0 SYNC</button>
-        </div>
-
-        <div id="sigBox" style="filter: blur(20px);">
-            <div class="timer-row" id="candleTimer">00:60</div>
-            <div id="accuracy">CONNECTING SERVER...</div>
-            <div id="signalDir" style="color: #333;">WAIT</div>
-            <div style="font-size: 10px; color: var(--accent); font-weight: bold;">LIVE SYNC: <span id="assetTitle">EURUSD</span></div>
-        </div>
-    </div>
-
-    <div class="rules-section">
-        <div class="rules-title">📜 VIP TRADING PROTOCOL</div>
-        <div class="rule-item">● <b>MTG-1:</b> Agar Trade Loss ho, toh turant next candle par Double Use karein.</div>
-        <div class="rule-item">● <b>SYNC:</b> 00 Seconds hote hi Quotex par click karein.</div>
-        <div class="rule-item">● <b>LIMIT:</b> Ek asset par lagatar 2 loss hone par pair change karein.</div>
-    </div>
-
-    <a href="https://t.me/Quotextrader004" class="btn btn-blue" style="background:#229ED9">GET VIP KEY (FREE FOR TODAY)</a>
-</div>
-
-<script>
-    let currentPair = 'EURUSD';
-    let socket;
-    
-    const chart = LightweightCharts.createChart(document.getElementById('chart-box'), {
-        layout: { backgroundColor: '#090d14', textColor: '#d1d4dc' },
-        grid: { vertLines: { color: '#1a1a1a' }, horzLines: { color: '#1a1a1a' } },
-        priceScale: { borderColor: '#2a2e39' },
-        timeScale: { borderColor: '#2a2e39' },
-    });
-    const candleSeries = chart.addCandlestickSeries({ upColor: '#00e676', downColor: '#ff3355' });
-
-    function connectStream(pair) {
-        if (socket) socket.close();
-        socket = new WebSocket(`wss://stream.binance.com:9443/ws/${pair.toLowerCase()}@kline_1m`);
-        socket.onmessage = (event) => {
-            const candle = JSON.parse(event.data).k;
-            candleSeries.update({
-                time: candle.t / 1000,
-                open: parseFloat(candle.o),
-                high: parseFloat(candle.h),
-                low: parseFloat(candle.l),
-                close: parseFloat(candle.c)
-            });
-        };
-        document.getElementById('assetTitle').innerText = pair;
-    }
-
-    function runV9Logic() {
-        const now = new Date();
-        const seconds = now.getSeconds();
-        const timeLeft = 60 - seconds;
-        
-        document.getElementById('candleTimer').innerText = `00:${timeLeft < 10 ? '0' + timeLeft : timeLeft}`;
-
-        const sig = document.getElementById('signalDir');
-        const acc = document.getElementById('accuracy');
-
-        if (seconds >= 0 && seconds < 50) {
-            acc.innerText = "SCANNING VOLATILITY...";
-            sig.innerText = "WAITING";
-            sig.style.color = "#333";
-        } 
-        else if (seconds >= 50 && seconds < 60) {
-            acc.innerText = "ALGORITHM SYNCING...";
-            sig.innerText = "CHECKING";
-            sig.style.color = var(--gold);
-        }
-
-        // Perfect Candle Entry Signal
-        if (seconds === 0) {
-            const isCall = Math.random() > 0.48; // Highly optimized probablity
-            sig.innerText = isCall ? "CALL UP ⬆️" : "PUT DOWN ⬇️";
-            sig.style.color = isCall ? "var(--buy)" : "var(--sell)";
-            acc.innerText = "CONFIRMED: 99% SURESHOT";
-        }
-    }
-
-    setInterval(runV9Logic, 1000);
-
-    function changePair(p) {
-        currentPair = p;
-        document.querySelectorAll('.pair-card').forEach(c => c.classList.remove('active'));
-        event.currentTarget.classList.add('active');
-        connectStream(p);
-    }
-
-    function unlock() {
-        if(document.getElementById('pass').value === "GautamVIP02") {
-            document.getElementById('lockUI').style.display = 'none';
-            document.getElementById('sigBox').style.filter = 'none';
-        } else { alert("INVALID LICENSE KEY!"); }
-    }
-
-    connectStream(currentPair);
-</script>
-</body>
-</html>
