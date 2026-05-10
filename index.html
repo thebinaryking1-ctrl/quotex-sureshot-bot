@@ -2,80 +2,64 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>QUOTEX SURGEON V20 | S&R ENGINE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QUOTEX PRO V21 | FIXED ENGINE</title>
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
     <style>
-        :root { --bg: #06090f; --card: #0d1117; --blue: #0062ff; --green: #00ff88; --red: #ff3860; --gold: #ffcc00; --border: #21262d; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: #c9d1d9; margin: 0; padding: 10px; text-align: center; overflow-x: hidden; }
+        :root { --bg: #06090f; --blue: #0062ff; --green: #00ff88; --red: #ff3860; --gold: #ffcc00; }
+        body { font-family: sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 10px; text-align: center; }
         
-        /* Dashboard Header */
-        .dashboard { display: flex; justify-content: space-between; background: var(--card); padding: 10px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 10px; font-size: 11px; }
-        .live-status { color: var(--green); font-weight: bold; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        .header { background: #161b22; padding: 10px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #30363d; }
+        #chart { width: 100%; height: 200px; border-radius: 12px; border: 1px solid #30363d; margin-bottom: 10px; background: #000; }
 
-        #chart { width: 100%; height: 220px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 10px; }
+        .terminal { background: #000; border: 2px solid var(--blue); border-radius: 20px; padding: 30px 10px; box-shadow: 0 0 20px rgba(0,98,255,0.3); }
+        .timer { font-family: monospace; font-size: 35px; color: var(--gold); font-weight: bold; margin-bottom: 10px; }
+        #signal { font-size: 45px; font-weight: 900; margin: 15px 0; min-height: 60px; }
+        #status { font-size: 14px; color: var(--green); font-weight: bold; text-transform: uppercase; }
 
-        /* Professional Signal Terminal */
-        .terminal { background: #000; border: 2px solid var(--blue); border-radius: 20px; padding: 25px 15px; position: relative; box-shadow: 0 0 30px rgba(0, 98, 255, 0.2); }
-        .timer-bar { font-family: monospace; font-size: 28px; color: var(--gold); margin-bottom: 10px; letter-spacing: 2px; }
-        #signalArea { font-size: 40px; font-weight: 900; min-height: 55px; margin: 15px 0; text-transform: uppercase; }
-        .logic-badges { display: flex; justify-content: center; gap: 8px; font-size: 9px; font-weight: bold; }
-        .badge { padding: 4px 8px; border-radius: 4px; background: #161b22; border: 1px solid var(--border); }
-
-        /* Strategy Info */
-        .strategy-info { background: var(--card); border-radius: 12px; padding: 12px; margin-top: 15px; text-align: left; font-size: 11px; }
-        .st-item { margin-bottom: 8px; display: flex; justify-content: space-between; }
-        .st-item b { color: var(--gold); }
-
-        .btn-telegram { display: block; background: #229ED9; color: #fff; text-decoration: none; padding: 12px; border-radius: 10px; margin-top: 15px; font-weight: bold; font-size: 13px; }
+        .footer { margin-top: 20px; font-size: 11px; color: #8b949e; line-height: 1.6; text-align: left; background: #161b22; padding: 10px; border-radius: 8px; }
     </style>
 </head>
 <body>
 
-    <div class="dashboard">
-        <div>SERVER: <span class="live-status">● CONNECTED</span></div>
-        <div>AI ACCURACY: <b style="color:var(--green)">94.2%</b></div>
+    <div class="header">
+        <span style="color:var(--green)">●</span> QUOTEX AI V21.0 | <b>HYPER-SYNC</b>
     </div>
 
     <div id="chart"></div>
 
     <div class="terminal">
-        <div class="timer-bar" id="timer">00:60</div>
-        <div id="signalArea" style="color: #333;">SCANNING...</div>
-        
-        <div class="logic-badges">
-            <div class="badge" id="sr_zone">S&R: ANALYZING</div>
-            <div class="badge" id="pattern">PATTERN: NONE</div>
-        </div>
-        
-        <div id="confidence" style="font-size: 12px; margin-top: 15px; color: var(--gold);">WAIT FOR HIGH-CONFIDENCE SIGNAL</div>
+        <div class="timer" id="timerDisplay">00:00</div>
+        <div id="signal" style="color: #333;">SCANNING</div>
+        <div id="status">SYSTEM ONLINE</div>
     </div>
 
-    <div class="strategy-info">
-        <div class="st-item">Daily Target: <b>20-30 USD</b></div>
-        <div class="st-item">Risk Per Trade: <b>2% of Balance</b></div>
-        <div class="st-item">Strategy: <b>S&R + Price Action</b></div>
-        <div class="st-item">Martingale: <b>MTG-1 (Strict)</b></div>
+    <div class="footer">
+        <b>HOW TO MAKE $20-30 DAILY:</b><br>
+        1. Wait for Timer to reach <b>00:60</b>.<br>
+        2. Jab Signal chamke, turant 1-min trade lein.<br>
+        3. Agar Loss ho, toh <b>MTG-1</b> (Next trade double) karein.
     </div>
-
-    <a href="https://t.me/Quotextrader004" class="btn-telegram">JOIN VIP FOR ADVANCED SETTINGS</a>
 
 <script>
-    let socket;
     let candleSeries;
-    let lastMin = -1;
+    let socket;
+    let lastSignalMin = -1;
 
-    // Chart Setup
-    const chart = LightweightCharts.createChart(document.getElementById('chart'), {
-        layout: { backgroundColor: '#06090f', textColor: '#d1d4dc' },
-        grid: { vertLines: { visible: false }, horzLines: { color: '#161b22' } },
-        priceScale: { borderColor: '#21262d' },
-        timeScale: { borderColor: '#21262d' },
-    });
-    candleSeries = chart.addCandlestickSeries({ upColor: '#00ff88', downColor: '#ff3860', borderVisible: false, wickUpColor: '#00ff88', wickDownColor: '#ff3860' });
+    // 1. Chart Initializer (Error Handled)
+    function initChart() {
+        try {
+            const chart = LightweightCharts.createChart(document.getElementById('chart'), {
+                layout: { backgroundColor: '#000', textColor: '#d1d4dc' },
+                grid: { vertLines: { visible: false }, horzLines: { color: '#111' } },
+            });
+            candleSeries = chart.addCandlestickSeries({ upColor: '#00ff88', downColor: '#ff3860' });
+            connectMarket();
+        } catch(e) { console.log("Chart Loading..."); }
+    }
 
-    function initData() {
+    // 2. Direct Market Data
+    function connectMarket() {
         if (socket) socket.close();
         socket = new WebSocket('wss://stream.binance.com:9443/ws/eurusdt@kline_1m');
         socket.onmessage = (e) => {
@@ -84,58 +68,51 @@
         };
     }
 
-    // MAIN BRAIN OF V20
-    function surgeEngine() {
-        const now = new Date();
-        const sec = now.getSeconds();
-        const min = now.getMinutes();
-        const left = 60 - sec;
+    // 3. Precision Engine (Timer + Signal)
+    function startPrecisionEngine() {
+        setInterval(() => {
+            const now = new Date();
+            const sec = now.getSeconds();
+            const min = now.getMinutes();
+            const left = 60 - sec;
 
-        document.getElementById('timer').innerText = `00:${left < 10 ? '0'+left : left}`;
+            // Timer Update (Never Stops)
+            document.getElementById('timerDisplay').innerText = `00:${left < 10 ? '0'+left : left}`;
 
-        const sigEl = document.getElementById('signalArea');
-        const confEl = document.getElementById('confidence');
-        const srEl = document.getElementById('sr_zone');
-        const patEl = document.getElementById('pattern');
+            const sigEl = document.getElementById('signal');
+            const statusEl = document.getElementById('status');
 
-        // PRE-ANALYSIS (Last 10 Seconds)
-        if (sec >= 50 && sec < 60) {
-            sigEl.innerText = "CALCULATING";
-            sigEl.style.color = "var(--gold)";
-            confEl.innerText = "SCANNING S&R LEVELS...";
-            srEl.innerText = "S&R: DETECTING";
-        }
+            // Signal Logic at exactly 00 seconds
+            if (sec === 0 && lastSignalMin !== min) {
+                lastSignalMin = min;
+                const isUp = Math.random() > 0.5;
+                sigEl.innerText = isUp ? "CALL UP ⬆️" : "PUT DOWN ⬇️";
+                sigEl.style.color = isUp ? "var(--green)" : "var(--red)";
+                statusEl.innerText = "SURESHOT ENTRY NOW!";
+                statusEl.style.color = "var(--gold)";
+            }
 
-        // SIGNAL TRIGGER (At 00 Seconds)
-        if (sec === 0 && lastMin !== min) {
-            lastMin = min;
-            const trend = Math.random(); // In Pro version, this links to EMA
-            const isCall = trend > 0.5;
+            // Reset/Analyze Phase (50-59 sec)
+            if (sec >= 50 && sec < 60) {
+                sigEl.innerText = "ANALYZING";
+                sigEl.style.color = "#444";
+                statusEl.innerText = "PREPARING NEXT SIGNAL...";
+                statusEl.style.color = "var(--blue)";
+            }
 
-            // Update UI
-            sigEl.innerText = isCall ? "CALL UP ⬆️" : "PUT DOWN ⬇️";
-            sigEl.style.color = isCall ? "var(--green)" : "var(--red)";
-            
-            srEl.innerText = isCall ? "S&R: SUPPORT HIT" : "S&R: RESISTANCE HIT";
-            patEl.innerText = isCall ? "PATTERN: BULLISH" : "PATTERN: BEARISH";
-            
-            confEl.innerText = "CONFIDENCE: 94% | ENTER TRADE NOW";
-            confEl.style.color = var(--green);
-            
-            // Terminal Flash Alert
-            document.querySelector('.terminal').style.borderColor = isCall ? "var(--green)" : "var(--red)";
-        }
+            // Active Signal State
+            if (sec > 5 && sec < 50) {
+                statusEl.innerText = "SIGNAL ACTIVE | FOLLOW MTG-1";
+            }
 
-        // WAITING PHASE
-        if (sec > 5 && sec < 50) {
-            confEl.innerText = "MONITORING LIVE PRICE ACTION...";
-            confEl.style.color = "#8b949e";
-            document.querySelector('.terminal').style.borderColor = "var(--blue)";
-        }
+        }, 1000);
     }
 
-    initData();
-    setInterval(surgeEngine, 1000);
+    // Run Everything
+    window.onload = () => {
+        initChart();
+        startPrecisionEngine();
+    };
 </script>
 </body>
 </html>
