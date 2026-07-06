@@ -3,132 +3,362 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QUOTEX SYNC V22 | SAME SIGNAL ALL DEVICES</title>
-    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+    <title>Shrimad Rajchandra Sarvamangal Hospital & C U Shah Medical College</title>
+    <!-- Tailwind CSS for Modern Styling -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome for Beautiful Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg: #06090f; --blue: #0062ff; --green: #00ff88; --red: #ff3860; --gold: #ffcc00; --border: #21262d; }
-        body { font-family: sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 5px; text-align: center; }
-        
-        .layout { display: flex; flex-direction: column; gap: 10px; max-width: 800px; margin: auto; }
-        
-        /* Asset Selector List */
-        .asset-container { background: #0d1117; border: 1px solid var(--border); border-radius: 10px; padding: 10px; }
-        .asset-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; max-height: 100px; overflow-y: auto; }
-        .asset-btn { background: #161b22; border: 1px solid var(--border); color: #8b949e; padding: 8px 2px; border-radius: 4px; font-size: 10px; cursor: pointer; font-weight: bold; }
-        .asset-btn.active { border-color: var(--blue); color: #fff; background: rgba(0, 98, 255, 0.2); }
-
-        #chart { width: 100%; height: 200px; border-radius: 12px; border: 1px solid var(--border); background: #000; }
-
-        /* Sync Terminal */
-        .terminal { background: #000; border: 2px solid var(--blue); border-radius: 20px; padding: 20px; position: relative; box-shadow: 0 0 20px rgba(0,98,255,0.3); }
-        .timer { font-family: monospace; font-size: 32px; color: var(--gold); }
-        #signal { font-size: 42px; font-weight: 900; margin: 10px 0; min-height: 50px; }
-        #info { font-size: 12px; color: var(--green); font-weight: bold; }
-
-        .footer { font-size: 10px; color: #555; background: #0d1117; padding: 10px; border-radius: 8px; text-align: left; }
+        /* Smooth Scrolling Behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+        /* Custom styles to hide/show languages cleanly */
+        [lang-chng="gu"] .lang-en { display: none; }
+        [lang-chng="en"] .lang-gu { display: none; }
     </style>
 </head>
-<body>
+<body class="bg-gray-50 text-gray-800 font-sans" lang-chng="en">
 
-<div class="layout">
-    <div style="font-size: 12px; font-weight: bold; color: var(--blue);">QUOTEX SYNC ENGINE V22.0</div>
+    <!-- Top Info Bar -->
+    <div class="bg-blue-900 text-white text-xs sm:text-sm py-2 px-4 flex flex-wrap justify-between items-center gap-2">
+        <div class="flex items-center space-x-4">
+            <span><i class="fa-solid fa-phone mr-1 text-teal-300"></i> +91-2752-287000</span>
+            <span class="hidden md:inline"><i class="fa-solid fa-envelope mr-1 text-teal-300"></i> cushahmedical@gmail.com</span>
+        </div>
+        
+        <!-- Language Switcher & Credits -->
+        <div class="flex items-center space-x-3">
+            <!-- Language Toggle Button -->
+            <button onclick="toggleLanguage()" class="bg-teal-400 hover:bg-teal-300 text-blue-950 font-bold px-3 py-1 rounded text-xs transition flex items-center cursor-pointer shadow">
+                <i class="fa-solid fa-language mr-1.5 text-sm"></i>
+                <span id="langBtnText">ગુજરાતી</span>
+            </button>
 
-    <div id="chart"></div>
-
-    <div class="asset-container">
-        <div style="font-size: 10px; margin-bottom: 5px; color: var(--gold);">SELECT ASSET (30+ PAIRS)</div>
-        <div class="asset-grid" id="assetList">
-            <button class="asset-btn active" onclick="changePair(this, 'EURUSD')">EUR/USD</button>
-            <button class="asset-btn" onclick="changePair(this, 'GBPUSD')">GBP/USD</button>
-            <button class="asset-btn" onclick="changePair(this, 'USDJPY')">USD/JPY</button>
-            <button class="asset-btn" onclick="changePair(this, 'AUDUSD')">AUD/USD</button>
-            <button class="asset-btn" onclick="changePair(this, 'USDCAD')">USD/CAD</button>
-            <button class="asset-btn" onclick="changePair(this, 'EURJPY')">EUR/JPY</button>
-            <button class="asset-btn" onclick="changePair(this, 'GBPJPY')">GBP/JPY</button>
-            <button class="asset-btn" onclick="changePair(this, 'AUDJPY')">AUD/JPY</button>
-            <button class="asset-btn" onclick="changePair(this, 'BTCUSDT')">BTC/USD</button>
-            <button class="asset-btn" onclick="changePair(this, 'ETHUSDT')">ETH/USD</button>
-            <button class="asset-btn" onclick="changePair(this, 'SOLUSDT')">SOL/USD</button>
-            <button class="asset-btn" onclick="changePair(this, 'XRPUSDT')">XRP/USD</button>
+            <!-- Top Right Corner: Website Maker Credit -->
+            <div class="bg-blue-950/80 px-2.5 py-1 rounded border border-blue-800 flex items-center space-x-2 text-[11px] sm:text-xs">
+                <span class="text-gray-400 font-medium">Maker:</span>
+                <span class="text-teal-300 font-bold">Gautam Chauhan</span>
+                <a href="tel:+917487945530" class="hover:text-white transition text-gray-300"><i class="fa-solid fa-phone"></i></a>
+                <a href="https://wa.me/917487945530" target="_blank" class="hover:text-green-400 transition text-green-500 font-bold"><i class="fa-brands fa-whatsapp text-sm"></i></a>
+            </div>
         </div>
     </div>
 
-    <div class="terminal">
-        <div class="timer" id="timer">00:00</div>
-        <div id="signal" style="color: #333;">SCANNING</div>
-        <div id="info">ASSET: <span id="currentAsset">EURUSD</span></div>
+    <!-- Main Navigation Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-blue-600 text-white p-2.5 rounded-full">
+                    <i class="fa-solid fa-hospital-user text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg md:text-xl font-bold text-blue-900 leading-tight">
+                        <span class="lang-en">Shrimad Rajchandra Sarvamangal Hospital</span>
+                        <span class="lang-gu">શ્રીમદ રાજચંદ્ર સર્વમંગલ હોસ્પિટલ</span>
+                    </h1>
+                    <p class="text-xs text-gray-500 font-medium">
+                        <span class="lang-en">& C.U. Shah Medical College, Surendranagar</span>
+                        <span class="lang-gu">& સી. યુ. શાહ મેડિકલ કોલેજ, સુરેન્દ્રનગર</span>
+                    </p>
+                </div>
+            </div>
+            <nav class="hidden lg:flex space-x-6 font-semibold text-gray-600">
+                <a href="#home" class="hover:text-blue-600 transition"><span class="lang-en">Home</span><span class="lang-gu">હોમ</span></a>
+                <a href="#about" class="hover:text-blue-600 transition"><span class="lang-en">About Us</span><span class="lang-gu">અમારા વિશે</span></a>
+                <a href="#departments" class="hover:text-blue-600 transition"><span class="lang-en">Departments</span><span class="lang-gu">વિભાગો</span></a>
+                <a href="#facilities" class="hover:text-blue-600 transition"><span class="lang-en">Facilities</span><span class="lang-gu">સુવિધાઓ</span></a>
+                <a href="#contact" class="hover:text-blue-600 transition"><span class="lang-en">Contact</span><span class="lang-gu">સંપર્ક</span></a>
+            </nav>
+            <a href="tel:+912752287000" class="bg-blue-600 text-white px-5 py-2 rounded-full font-bold shadow hover:bg-blue-700 transition hidden sm:block">
+                <i class="fa-solid fa-phone-volume mr-2"></i>
+                <span class="lang-en">Call Hospital</span><span class="lang-gu">હોસ્પિટલ કોલ કરો</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative bg-gradient-to-r bg-blue-950 text-white py-20 md:py-32 px-4 overflow-hidden">
+        <div class="absolute inset-0 opacity-10 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?auto=format&fit=crop&w=1200&q=80');"></div>
+        <div class="container mx-auto max-w-4xl text-center relative z-10">
+            <span class="bg-teal-500 text-blue-950 px-4 py-1.5 rounded-full text-xs md:text-sm font-bold uppercase tracking-wider">
+                <span class="lang-en">Committed to Clinical Excellence</span>
+                <span class="lang-gu">ક્લિનિકલ શ્રેષ્ઠતા માટે પ્રતિબદ્ધ</span>
+            </span>
+            <h2 class="text-3xl md:text-5xl font-black mt-6 mb-4 leading-tight">
+                <span class="lang-en">Compassionate Healthcare & Premium Medical Education</span>
+                <span class="lang-gu">કરુણાપૂર્ણ આરોગ્ય સંભાળ અને પ્રીમિયમ તબીબી શિક્ષણ</span>
+            </h2>
+            <p class="text-lg text-blue-100 max-w-2xl mx-auto mb-8">
+                <span class="lang-en">Serving the community of Surendranagar and beyond with advanced medical technologies, expert doctors, and a selfless service approach.</span>
+                <span class="lang-gu">અદ્યતન તબીબી ટેકનોલોજી, નિષ્ણાત ડોકટરો અને નિઃસ્વાર્થ સેવા અભિગમ સાથે સુરેન્દ્રનગર અને તેની બહારના સમાજની સેવા કરવી.</span>
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#departments" class="bg-teal-400 text-blue-950 font-bold px-8 py-3 rounded-lg shadow-lg hover:bg-teal-300 transition w-full sm:w-auto text-center">
+                    <span class="lang-en">Our Departments</span><span class="lang-gu">અમારા વિભાગો</span>
+                </a>
+                <a href="#contact" class="border-2 border-white hover:bg-white hover:text-blue-900 font-bold px-8 py-3 rounded-lg transition w-full sm:w-auto text-center">
+                    <span class="lang-en">Find Us</span><span class="lang-gu">અમને શોધો</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Emergency Quick Stats Cards -->
+    <div class="container mx-auto px-4 -mt-10 relative z-20 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-xl shadow-xl border-t-4 border-red-500 flex items-start space-x-4">
+            <div class="bg-red-100 p-3 rounded-lg text-red-600"><i class="fa-solid fa-truck-medical text-2xl"></i></div>
+            <div>
+                <h3 class="font-bold text-gray-900 text-lg">
+                    <span class="lang-en">Emergency & Trauma</span><span class="lang-gu">ઇમરજન્સી અને ટ્રોમા</span>
+                </h3>
+                <p class="text-sm text-gray-600 mt-1">
+                    <span class="lang-en">24/7 dedicated polytrauma care and rapid response medical teams.</span>
+                    <span class="lang-gu">24/7 સમર્પિત પોલિટ્રોમા કેર અને ઝડપી પ્રતિભાવ તબીબી ટીમો.</span>
+                </p>
+            </div>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-xl border-t-4 border-blue-600 flex items-start space-x-4">
+            <div class="bg-blue-100 p-3 rounded-lg text-blue-600"><i class="fa-solid fa-heart-pulse text-2xl"></i></div>
+            <div>
+                <h3 class="font-bold text-gray-900 text-lg">
+                    <span class="lang-en">Advanced Heart Care</span><span class="lang-gu">એડવાન્સ હાર્ટ કેર</span>
+                </h3>
+                <p class="text-sm text-gray-600 mt-1">
+                    <span class="lang-en">Only medical institution in the district with full-spectrum cardiac infrastructure.</span>
+                    <span class="lang-gu">સમગ્ર જિલ્લામાં સંપૂર્ણ કાર્ડિયાક ઈન્ફ્રાસ્ટ્રક્ચર ધરાવતી એકમાત્ર તબીબી સંસ્થા.</span>
+                </p>
+            </div>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-xl border-t-4 border-green-500 flex items-start space-x-4">
+            <div class="bg-green-100 p-3 rounded-lg text-green-600"><i class="fa-solid fa-id-card text-2xl"></i></div>
+            <div>
+                <h3 class="font-bold text-gray-900 text-lg">
+                    <span class="lang-en">PMJAY Cashless Facility</span><span class="lang-gu">PMJAY કેશલેસ સુવિધા</span>
+                </h3>
+                <p class="text-sm text-gray-600 mt-1">
+                    <span class="lang-en">Free and cashless healthcare solutions for all eligible Ayushman cardholders.</span>
+                    <span class="lang-gu">તમામ પાત્ર આયુષ્માન કાર્ડધારકો માટે મફત અને રોકડ રહિત આરોગ્ય સંભાળ સેવાઓ.</span>
+                </p>
+            </div>
+        </div>
     </div>
 
-    <div class="footer">
-        <b>SYNC TRADING:</b> Ye signal price ke last digit se banta hai, isliye har device par same aayega. 00:60 par trade lein. Loss hone par <b>MTG-1</b> karein.
-    </div>
-</div>
+    <!-- About Section -->
+    <section id="about" class="py-16 container mx-auto px-4 max-w-5xl">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-blue-900">
+                <span class="lang-en">About Our Institution</span><span class="lang-gu">અમારી સંસ્થા વિશે</span>
+            </h2>
+            <div class="w-16 h-1 bg-blue-600 mx-auto mt-2"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+            <div>
+                <p class="text-gray-700 leading-relaxed mb-4">
+                    <span class="lang-en"><strong>Shrimad Rajchandra Sarvamangal Hospital & C U Shah Medical College</strong> is a trusted healthcare destination in Surendranagar, Gujarat. Managed with the core philosophy of selfless care, the institution serves as both a high-quality educational pillar and a multi-specialty medical hub.</span>
+                    <span class="lang-gu"><strong>શ્રીમદ રાજચંદ્ર સર્વમંગલ હોસ્પિટલ અને સી યુ શાહ મેડિકલ કોલેજ</strong> એ સુરેન્દ્રનગર, ગુજરાતમાં એક વિશ્વસનીય હેલ્થકેર ડેસ્ટિનેશન છે. નિઃસ્વાર્થ સંભાળની મૂળ ફિલસૂફી સાથે સંચાલિત, આ સંસ્થા ઉચ્ચ ગુણવત્તાવાળા શૈક્ષણિક સ્તંભ અને મલ્ટિ-સ્પેશિયાલિટી મેડિકલ હબ બંને તરીકે સેવા આપે છે.</span>
+                </p>
+                <p class="text-gray-700 leading-relaxed">
+                    <span class="lang-en">Our objective is to ensure freedom from diseases through regular camp reach-outs, sophisticated clinical workflows, and advanced medical expertise—treating every patient just like a member of our family.</span>
+                    <span class="lang-gu">અમારો ઉદ્દેશ્ય નિયમિત કેમ્પ આઉટરીચ, અત્યાધુનિક ક્લિનિકલ વર્કફ્લો અને અદ્યતન તબીબી કુશળતા દ્વારા રોગોથી મુક્તિ સુનિશ્ચિત કરવાનો છે - દરેક દર્દીને અમારા પરિવારના સભ્યની જેમ સારવાર આપવી.</span>
+                </p>
+            </div>
+            <div class="bg-blue-50 p-6 rounded-xl border border-blue-100">
+                <h4 class="font-bold text-blue-900 text-lg mb-4">
+                    <i class="fa-solid fa-bullseye mr-2 text-teal-500"></i>
+                    <span class="lang-en">Guiding Principles</span><span class="lang-gu">માર્ગદર્શક સિદ્ધાંતો</span>
+                </h4>
+                <ul class="space-y-3 text-sm text-gray-700">
+                    <li class="flex items-center"><i class="fa-solid fa-circle-check text-green-500 mr-2"></i> 
+                        <span class="lang-en">To manifest true love as compassionate care.</span>
+                        <span class="lang-gu">સાચા પ્રેમને કરુણાપૂર્ણ સંભાળ તરીકે પ્રગટ કરવો.</span>
+                    </li>
+                    <li class="flex items-center"><i class="fa-solid fa-circle-check text-green-500 mr-2"></i> 
+                        <span class="lang-en">Continuous innovation in rural health management.</span>
+                        <span class="lang-gu">ગ્રામીણ આરોગ્ય વ્યવસ્થાપનમાં સતત નવીનતા.</span>
+                    </li>
+                    <li class="flex items-center"><i class="fa-solid fa-circle-check text-green-500 mr-2"></i> 
+                        <span class="lang-en">Complete round-the-clock intensive care ecosystem.</span>
+                        <span class="lang-gu">ચોવીસ કલાક સંપૂર્ણ સઘન સંભાળ ઇકોસિસ્ટમ.</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
 
-<script>
-    let candleSeries, socket, currentPair = 'EURUSD', lastPrice = 0;
-    let lastSignalMin = -1;
+    <!-- Departments Section -->
+    <section id="departments" class="bg-blue-50 py-16 px-4">
+        <div class="container mx-auto max-w-6xl">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-blue-900">
+                    <span class="lang-en">Specialized Medical Departments</span><span class="lang-gu">વિશિષ્ટ તબીબી વિભાગો</span>
+                </h2>
+                <p class="text-sm text-gray-500 mt-1">
+                    <span class="lang-en">All standard and superspecialty diagnostic fields available under one roof</span>
+                    <span class="lang-gu">તમામ સ્ટાન્ડર્ડ અને સુપરસ્પેશિયાલિટી નિદાન ક્ષેત્રો એક જ છત નીચે ઉપલબ્ધ છે</span>
+                </p>
+                <div class="w-16 h-1 bg-blue-600 mx-auto mt-2"></div>
+            </div>
 
-    // 1. Chart Init
-    const chart = LightweightCharts.createChart(document.getElementById('chart'), {
-        layout: { backgroundColor: '#000', textColor: '#d1d4dc' },
-        grid: { vertLines: { visible: false }, horzLines: { color: '#111' } },
-    });
-    candleSeries = chart.addCandlestickSeries({ upColor: '#00ff88', downColor: '#ff3860' });
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Dept 1 -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition">
+                    <div class="text-blue-600 text-3xl mb-3"><i class="fa-solid fa-heart-pulse"></i></div>
+                    <h3 class="font-bold text-gray-900 text-lg mb-1"><span class="lang-en">Cardiology</span><span class="lang-gu">કાર્ડિયોલોજી</span></h3>
+                    <p class="text-xs text-gray-600">
+                        <span class="lang-en">Angioplasty, angiography, pacemaker implantations, and dedicated ICCU monitoring.</span>
+                        <span class="lang-gu">એન્જિયોપ્લાસ્ટી, એન્જિયોગ્રાફી, પેસમેકર ઈમ્પ્લાન્ટેશન અને સમર્પિત ICCU મોનિટરિંગ.</span>
+                    </p>
+                </div>
+                <!-- Dept 2 -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition">
+                    <div class="text-blue-600 text-3xl mb-3"><i class="fa-solid fa-bone"></i></div>
+                    <h3 class="font-bold text-gray-900 text-lg mb-1"><span class="lang-en">Orthopaedic Surgery</span><span class="lang-gu">ઓર્થોપેડિક સર્જરી</span></h3>
+                    <p class="text-xs text-gray-600">
+                        <span class="lang-en">Complex limb trauma, joint replacements, arthroscopy, and spine stabilization.</span>
+                        <span class="lang-gu">જટિલ અંગ ટ્રોમા, જોઈન્ટ રિપ્લેસમેન્ટ, આર્થ્રોસ્કોપી અને સ્પાઈન સ્ટેબિલાઈઝેશન.</span>
+                    </p>
+                </div>
+                <!-- Dept 3 -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition">
+                    <div class="text-blue-600 text-3xl mb-3"><i class="fa-solid fa-kit-medical"></i></div>
+                    <h3 class="font-bold text-gray-900 text-lg mb-1"><span class="lang-en">General Medicine</span><span class="lang-gu">જનરલ મેડિસિન</span></h3>
+                    <p class="text-xs text-gray-600">
+                        <span class="lang-en">Comprehensive management for acute & chronic multisystem disorders with expert physicians.</span>
+                        <span class="lang-gu">નિષ્ણાત ચિકિત્સકો સાથે તીવ્ર અને ક્રોનિક મલ્ટિસિસ્ટમ વિકૃતિઓ માટે વ્યાપક સંચાલન.</span>
+                    </p>
+                </div>
+                <!-- Dept 4 -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition">
+                    <div class="text-blue-600 text-3xl mb-3"><i class="fa-solid fa-lungs"></i></div>
+                    <h3 class="font-bold text-gray-900 text-lg mb-1"><span class="lang-en">Respiratory Medicine</span><span class="lang-gu">શ્વસન દવા</span></h3>
+                    <p class="text-xs text-gray-600">
+                        <span class="lang-en">Fibreoptic Video Bronchoscopy, advanced TB management, and Respiratory ICU.</span>
+                        <span class="lang-gu">ફાઈબરોપ્ટિક વિડિયો બ્રોન્કોસ્કોપી, અદ્યતન ટીબી વ્યવસ્થાપન અને રેસ્પિરેટરી ICU.</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    // 2. Data Connection
-    function connect(pair) {
-        if (socket) socket.close();
-        socket = new WebSocket(`wss://stream.binance.com:9443/ws/${pair.toLowerCase()}@kline_1m`);
-        socket.onmessage = (e) => {
-            const k = JSON.parse(e.data).k;
-            lastPrice = parseFloat(k.c);
-            candleSeries.update({ time: k.t/1000, open: k.o, high: k.h, low: k.l, close: k.c });
-        };
-        document.getElementById('currentAsset').innerText = pair;
-    }
+    <!-- Key Infrastructure & Facilities -->
+    <section id="facilities" class="py-16 container mx-auto px-4 max-w-5xl">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-blue-900">
+                <span class="lang-en">Advanced Infrastructure Facilities</span><span class="lang-gu">અદ્યતન ઈન્ફ્રાસ્ટ્રક્ચર સુવિધાઓ</span>
+            </h2>
+            <div class="w-16 h-1 bg-blue-600 mx-auto mt-2"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="flex items-start space-x-4">
+                <span class="text-teal-500 text-2xl mt-1"><i class="fa-solid fa-circle-nodes"></i></span>
+                <div>
+                    <h4 class="font-bold text-gray-900 text-lg">
+                        <span class="lang-en">6 Modern Modular Operation Theatres</span><span class="lang-gu">6 આધુનિક મોડ્યુલર ઓપરેશન થિયેટર</span>
+                    </h4>
+                    <p class="text-gray-600 text-sm mt-1">
+                        <span class="lang-en">Equipped with global tier technology standards to systematically run highly critical super-specialty surgeries seamlessly.</span>
+                        <span class="lang-gu">ઉચ્ચ જટિલ સુપર-સ્પેશિયાલિટી સર્જરીઓ સરળતાથી ચલાવવા માટે વૈશ્વિક ટેકનોલોજી ધોરણોથી સજ્જ.</span>
+                    </p>
+                </div>
+            </div>
+            <div class="flex items-start space-x-4">
+                <span class="text-teal-500 text-2xl mt-1"><i class="fa-solid fa-users-viewfinder"></i></span>
+                <div>
+                    <h4 class="font-bold text-gray-900 text-lg">
+                        <span class="lang-en">Medical Outreach Programs</span><span class="lang-gu">મેડિકલ આઉટરીચ પ્રોગ્રામ્સ</span>
+                    </h4>
+                    <p class="text-gray-600 text-sm mt-1">
+                        <span class="lang-en">Organizing consistent clinical relief loops, evaluation fields, and diagnostic camps deep within remote regions of rural Gujarat.</span>
+                        <span class="lang-gu">ગ્રામીણ ગુજરાતના અંતરિયાળ વિસ્તારોમાં સતત ક્લિનિકલ કેમ્પ અને નિદાન કેમ્પનું આયોજન કરવું.</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    function changePair(btn, pair) {
-        document.querySelectorAll('.asset-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentPair = pair;
-        connect(pair);
-    }
+    <!-- Contact Section -->
+    <section id="contact" class="bg-blue-950 text-white py-16 px-4">
+        <div class="container mx-auto max-w-5xl">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-teal-400">
+                    <span class="lang-en">Get In Touch / Find Us</span><span class="lang-gu">સંપર્ક કરો / અમને શોધો</span>
+                </h2>
+                <div class="w-16 h-1 bg-teal-400 mx-auto mt-2"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div class="space-y-6">
+                    <h3 class="text-xl font-bold text-white border-b border-blue-800 pb-2">
+                        <span class="lang-en">Hospital Contacts</span><span class="lang-gu">હોસ્પિટલ સંપર્ક</span>
+                    </h3>
+                    <div class="flex items-start space-x-3">
+                        <i class="fa-solid fa-location-dot text-teal-400 text-xl mt-1"></i>
+                        <p class="text-blue-100 text-sm leading-relaxed">
+                            C U Shah Medical College & Shrimad Rajchandra Sarvamangal Hospital,<br>
+                            Dudhrej Road, Laxminarayan Society,<br>
+                            Surendranagar - 363001, Gujarat, India.
+                        </p>
+                    </div>
+                </div>
 
-    // 3. Sync Signal Engine (Same for all devices)
-    setInterval(() => {
-        const now = new Date();
-        const sec = now.getSeconds();
-        const min = now.getMinutes();
-        const left = 60 - sec;
+                <!-- Simple Quick Contact Form Layer -->
+                <div class="bg-blue-900 p-6 rounded-xl shadow-lg border border-blue-800">
+                    <h3 class="text-lg font-bold text-white mb-4">
+                        <span class="lang-en">Quick Enquiry / Feedback</span><span class="lang-gu">ઝડપી પૂછપરછ / ફીડબેક</span>
+                    </h3>
+                    <form class="space-y-4 text-sm" onsubmit="event.preventDefault(); alert('Thank you!');">
+                        <div>
+                            <label class="block text-blue-200 mb-1"><span class="lang-en">Full Name</span><span class="lang-gu">પૂરું નામ</span></label>
+                            <input type="text" placeholder="Enter name" class="w-full p-2.5 rounded bg-blue-950 border border-blue-800 text-white focus:outline-none focus:border-teal-400" required>
+                        </div>
+                        <button type="submit" class="w-full bg-teal-400 text-blue-950 font-bold py-2.5 rounded hover:bg-teal-300 transition uppercase tracking-wide">
+                            <span class="lang-en">Submit Details</span><span class="lang-gu">વિગતો સબમિટ કરો</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        document.getElementById('timer').innerText = `00:${left < 10 ? '0'+left : left}`;
-
-        const sigEl = document.getElementById('signal');
+    <!-- Footer with Developer Credits -->
+    <footer class="bg-blue-950 border-t border-blue-900 text-gray-400 text-xs py-8 text-center px-4">
+        <p>&copy; 2026 Shrimad Rajchandra Sarvamangal Hospital. All Rights Reserved.</p>
         
-        // At exactly 00 seconds
-        if (sec === 0 && lastSignalMin !== min) {
-            lastSignalMin = min;
+        <!-- Developer Credit Section -->
+        <div class="mt-6 pt-4 border-t border-blue-900/60 max-w-md mx-auto">
+            <p class="text-gray-400 text-sm font-medium">Website Designed & Developed By:</p>
+            <p class="text-teal-400 text-base font-bold mt-1 tracking-wide">Gautam Chauhan</p>
+            <div class="flex justify-center items-center space-x-4 mt-2 text-gray-300 text-xs">
+                <a href="tel:+917487945530" class="hover:text-white transition bg-blue-900/50 px-3 py-1.5 rounded border border-blue-800/80">
+                    <i class="fa-solid fa-phone mr-1.5 text-teal-400"></i>+91 7487945530
+                </a>
+                <a href="https://wa.me/917487945530" target="_blank" class="hover:text-white transition bg-green-950/40 px-3 py-1.5 rounded border border-green-900/80">
+                    <i class="fa-brands fa-whatsapp mr-1.5 text-green-400 font-bold"></i>Chat on WhatsApp
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Action Button -->
+    <a href="https://wa.me/917487945530?text=Hello%20Gautam..." target="_blank" class="fixed bottom-6 right-6 bg-green-500 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl z-50">
+        <i class="fa-brands fa-whatsapp text-3xl"></i>
+    </a>
+
+    <!-- Language Toggle JavaScript Logic -->
+    <script>
+        function toggleLanguage() {
+            const body = document.body;
+            const btnText = document.getElementById('langBtnText');
             
-            // LOGIC: Price ke last digit se signal (Taaki har phone par same ho)
-            // Agar last price ka decimal digit even hai toh CALL, odd hai toh PUT
-            const priceStr = lastPrice.toString();
-            const lastDigit = parseInt(priceStr.charAt(priceStr.length - 1));
-            
-            const isUp = lastDigit % 2 === 0;
-            sigEl.innerText = isUp ? "CALL UP ⬆️" : "PUT DOWN ⬇️";
-            sigEl.style.color = isUp ? "var(--green)" : "var(--red)";
-            document.querySelector('.terminal').style.borderColor = isUp ? "var(--green)" : "var(--red)";
+            if (body.getAttribute('lang-chng') === 'en') {
+                body.setAttribute('lang-chng', 'gu');
+                btnText.innerText = 'English';
+            } else {
+                body.setAttribute('lang-chng', 'en');
+                btnText.innerText = 'ગુજરાતી';
+            }
         }
+    </script>
 
-        if (sec === 50) {
-            sigEl.innerText = "WAITING";
-            sigEl.style.color = "#444";
-            document.querySelector('.terminal').style.borderColor = "var(--blue)";
-        }
-
-    }, 1000);
-
-    connect(currentPair);
-</script>
 </body>
 </html>
